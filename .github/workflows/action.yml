@@ -43,8 +43,7 @@ jobs:
         elif [ "${{ github.event.inputs.action }}" == "plan" ]; then
           terraform plan
         elif [ "${{ github.event.inputs.action }}" == "destroy" ]; then
-         auto-approve
+          terraform destroy -auto-approve
         else
           echo "Invalid action selected."
           exit 1
-        fi  # This line was missing
