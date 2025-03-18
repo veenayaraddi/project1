@@ -6,9 +6,10 @@ on:
       action:
         description: 'Choose the Terraform action'
         required: true
-        default: 'apply'
+        default: 'plan'
         type: choice
         options:
+          - plan
           - apply
           - destroy
 
@@ -38,11 +39,14 @@ jobs:
     - name: Perform Action
       run: |
         case "${{ github.event.inputs.action }}" in
+          plan)
+            terraform plan -auto-approve
+            ;;
           apply)
-            apply -auto-approve
+            terraform apply -auto-approve
             ;;
           destroy)
-            terraform destroy -auto-approve
+            terraform destroy 
             ;;
           *)
             echo "Invalid action selected."
