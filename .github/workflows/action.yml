@@ -6,10 +6,9 @@ on:
       action:
         description: 'Choose the Terraform action'
         required: true
-        default: 'plan'
+        default: 'apply'  # Default action is apply
         type: choice
         options:
-          - plan
           - apply
           - destroy
 
@@ -31,25 +30,18 @@ jobs:
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: us-east-1
+        aws-region: us-east-1  # Replace with your region
 
     - name: Terraform Init
       run: terraform init
-      
+
     - name: Perform Action
       run: |
-        case "${{ github.event.inputs.action }}" in
-          plan)
-            terraform plan
-            ;;
-          apply)
-            terraform apply -auto-approve
-            ;;
-          destroy)
-            terraform destroy -auto-approve
-            ;;
-          *)
-            echo "Invalid action selected."
-            exit 1
-            ;;
-        esac
+        if [ "${{ github.event.inputs.action }}" == "apply" ]; then
+          terraform apply -auto-approve
+        elif [ "${{ github.event.inputs.action }}" == "destroy" ]; then
+          terraform destroy -auto-approve
+        else
+          echo "Invalid action selected."
+          exit 1
+        fi
